@@ -118,8 +118,7 @@ The dashboard is built using **Metabase** and includes several charts to analyze
 ## Setup & Deployment
 ### 1. Clone Repository
 ```bash
-git clone <repo-url>
-cd <repo-folder>
+git clone https://github.com/iisyafiraa/skincare-product-review.git
 ```
 
 ### 2. Build and Run Docker Containers
