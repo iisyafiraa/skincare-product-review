@@ -51,17 +51,26 @@ This project builds an automated data pipeline to scrape, process, and analyze s
 ```
 
 ## Data Pipeline Workflow
+
+![Data Pipeline Workflow](images/flowchart.png)
+
 1. **Scraping (Bronze Layer):**
    - Uses **Selenium** to scrape skincare product data and reviews.
    - Stores raw data in PostgreSQL.
    - Managed by `scrape_product_dag.py` in **Apache Airflow**.
 
 2. **Transformation (Silver Layer):**
+
+![ERD Silver Layer](images/erd-silver.drawio.png)
+
    - Cleans and structures raw data using SQL transformations.
    - Converts unstructured text into structured format.
    - Managed by `transform_data_dag.py`.
 
 3. **Data Warehouse (Gold Layer):**
+
+![ERD Gold Layer](images/erd-gold.drawio.png)
+
    - Aggregates and organizes data into **dimensional models**.
    - Creates fact and dimension tables for analysis.
    - Managed by `gold_layer_dag.py`.
