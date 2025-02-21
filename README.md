@@ -52,7 +52,7 @@ This project builds an automated data pipeline to scrape, process, and analyze s
 
 ## Data Pipeline Workflow
 
-![Data Pipeline Workflow](images/flowchart.png)
+![Data Pipeline Workflow](image/flowchart.png)
 
 1. **Scraping (Bronze Layer):**
    - Uses **Selenium** to scrape skincare product data and reviews.
@@ -61,7 +61,7 @@ This project builds an automated data pipeline to scrape, process, and analyze s
 
 2. **Transformation (Silver Layer):**
 
-![ERD Silver Layer](images/erd-silver.drawio.png)
+![ERD Silver Layer](image/erd-silver.drawio.png)
 
    - Cleans and structures raw data using SQL transformations.
    - Converts unstructured text into structured format.
@@ -69,7 +69,7 @@ This project builds an automated data pipeline to scrape, process, and analyze s
 
 3. **Data Warehouse (Gold Layer):**
 
-![ERD Gold Layer](images/erd-gold.drawio.png)
+![ERD Gold Layer](image/erd-gold.drawio.png)
 
    - Aggregates and organizes data into **dimensional models**.
    - Creates fact and dimension tables for analysis.
