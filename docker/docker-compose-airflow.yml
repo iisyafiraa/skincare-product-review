@@ -1,0 +1,83 @@
+services:
+  scheduler:
+    image: dataeng-dibimbing/airflow
+    container_name: ${AIRFLOW_SCHEDULER_CONTAINER_NAME}
+    hostname: ${AIRFLOW_SCHEDULER_CONTAINER_NAME}
+    command: scheduler
+    restart: always
+    env_file:
+      - ../.env
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${POSTGRES_AIRFLOW_USER}:${POSTGRES_AIRFLOW_PASSWORD}@${POSTGRES_AIRFLOW_CONTAINER_NAME}/${POSTGRES_AIRFLOW_DB}
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_CONTAINER_NAME=${POSTGRES_CONTAINER_NAME}
+      - POSTGRES_ANALYSIS_CONTAINER_NAME=${POSTGRES_ANALYSIS_CONTAINER_NAME}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_ANALYSIS_PORT=${POSTGRES_ANALYSIS_PORT}
+      - SPARK_MASTER_HOST_NAME=${SPARK_MASTER_HOST_NAME}
+      - SPARK_MASTER_PORT=${SPARK_MASTER_PORT}
+      - AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE=Asia/Jakarta
+    volumes:
+      - ../dags:/opt/airflow/dags
+      - ../logs:/opt/airflow/logs
+      - ../spark_scripts:/spark_scripts
+      - ../bash_scripts:/bash_scripts
+      - ../scripts:/scripts
+      - ../data:/data
+      - ../jars:/opt/airflow/jars
+      # - ../sql:/sql
+      - ./dags/resources/sql:/sql
+      - ../soda:/soda
+  webserver:
+    image: dataeng-dibimbing/airflow
+    container_name: ${AIRFLOW_WEBSERVER_CONTAINER_NAME}
+    hostname: ${AIRFLOW_WEBSERVER_CONTAINER_NAME}
+    entrypoint: /scripts/entrypoint.sh
+    restart: always
+    depends_on:
+      - scheduler
+    env_file:
+      - ../.env
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${POSTGRES_AIRFLOW_USER}:${POSTGRES_AIRFLOW_PASSWORD}@${POSTGRES_AIRFLOW_CONTAINER_NAME}/${POSTGRES_AIRFLOW_DB}
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_CONTAINER_NAME=${POSTGRES_CONTAINER_NAME}
+      - POSTGRES_ANALYSIS_CONTAINER_NAME=${POSTGRES_ANALYSIS_CONTAINER_NAME}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_ANALYSIS_PORT=${POSTGRES_ANALYSIS_PORT}
+      - SPARK_MASTER_HOST_NAME=${SPARK_MASTER_HOST_NAME}
+      - SPARK_MASTER_PORT=${SPARK_MASTER_PORT}
+      - AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE=Asia/Jakarta
+    volumes:
+      - ../dags:/opt/airflow/dags
+      - ../logs:/opt/airflow/logs
+      # - ../sql:/opt/airflow/sql
+      - ./dags/resources/sql:/sql
+      - ../spark_scripts:/spark_scripts
+      - ../bash_scripts:/bash_scripts
+      - ../scripts:/scripts
+      - ../jars:/opt/airflow/jars
+      - ../data:/data
+      - ../soda:/soda
+    ports:
+      - ${AIRFLOW_WEBSERVER_PORT}:8080
+
+  selenium:
+    image: selenium/standalone-chrome:latest
+    container_name: ${SELENIUM_CONTAINER_NAME}
+    restart: always
+    ports:
+      - "4444:4444"
+
+networks:
+  default:
+    name: finpro-network
+    external: true

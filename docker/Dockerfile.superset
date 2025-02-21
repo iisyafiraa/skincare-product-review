@@ -1,0 +1,33 @@
+FROM apache/superset:latest
+
+# Switch to root user to create necessary directories
+USER root
+
+# Ensure Superset is installed
+RUN pip install apache-superset
+
+# Create /app/superset_data directory with correct ownership
+RUN mkdir -p /app/superset_data && chown -R superset:superset /app/superset_data
+RUN chmod -R 777 /app/superset_data
+
+# Set SUPERSET_HOME explicitly to /app
+ENV SUPERSET_HOME=/app
+
+# Set SUPERSET_DATA_DIR to /app/superset_data
+ENV SUPERSET_DATA_DIR=/app/superset_data
+
+# Copy your custom configuration
+COPY ../superset/superset_config.py /app/superset_config.py
+
+# Ensure proper ownership of both the configuration file and the data directory
+RUN chown -R superset:superset /app/superset_data /app/superset_config.py
+RUN chown -R superset:superset /app/superset_data /app
+
+# Expose the port Superset will run on
+EXPOSE 8088
+
+# Switch back to the superset user
+USER superset
+
+# Run the application
+CMD ["superset", "run", "-h", "0.0.0.0", "-p", "8088"]

@@ -1,0 +1,61 @@
+FROM apache/airflow:2.8.2-python3.9
+USER root
+
+# Install OpenJDK-17 and other utilities
+RUN apt update && \
+    apt-get install -y openjdk-17-jdk && \
+    apt-get install -y ant && \
+    apt-get install -y procps && \
+    apt-get install -y bash && \
+    apt-get install -y postgresql-client && \
+    apt-get install -y wget && \
+    apt-get install -y unzip && \
+    apt-get clean;
+
+# Install Google Chrome (stable version)
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    dpkg -i google-chrome-stable_current_amd64.deb || apt-get -f install -y && \
+    rm google-chrome-stable_current_amd64.deb
+
+# Install ChromeDriver (ensure compatibility with Chrome)
+RUN CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
+    wget https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip && \
+    unzip chromedriver_linux64.zip && \
+    mv chromedriver /usr/local/bin/ && \
+    rm chromedriver_linux64.zip
+
+# JDBC - Create jar directory and download the jar file
+RUN mkdir -p /opt/airflow/jars && \
+    wget https://jdbc.postgresql.org/download/postgresql-42.2.18.jar -O /opt/airflow/jars/postgresql-42.2.18.jar
+
+
+# Switch to airflow user
+USER airflow
+
+# Install Python dependencies including Selenium
+RUN pip install \
+    lxml \
+    pyspark==3.3.2 \
+    apache-airflow-providers-apache-spark==5.0.0 \
+    apache-airflow-providers-postgres \
+    apache-airflow-providers-openlineage==1.8.0 \
+    requests==2.31 \
+    pandas==1.2.4 \
+    soda-core \
+    soda-core-postgres \
+    beautifulsoup4 \
+    webdriver-manager \
+    selenium \
+    psycopg2-binary \
+    sqlalchemy
+
+# Set the necessary environment variables
+ENV POSTGRESQL_JAR_PATH=/opt/airflow/jars/postgresql-42.2.18.jar
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+RUN export JAVA_HOME
+
+# Copy DAGs and data to the container
+COPY --chown=airflow:root ./dags /opt/airflow/dags
+COPY --chown=airflow:root ./data /opt/airflow/data

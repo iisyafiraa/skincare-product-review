@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  superset:
+    image: dataeng-dibimbing/superset
+    container_name: ${SUPERSET_CONTAINER_NAME}
+    restart: no
+    environment:
+      - SUPERSET_ENV=development
+      - SUPERSET_SECRET_KEY=${SUPERSET_SECRET_KEY}
+      - SUPERSET_DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_CONTAINER_NAME}:${POSTGRES_PORT}/${POSTGRES_DB}
+      - FLASK_ENV=development
+      - SUPERSET_WEBSERVER_PORT=8088
+    volumes:
+      - ./superset:/app/superset
+    ports:
+      - "8088:8088"
+    depends_on:
+      - dibimbing-dataeng-postgres
+    networks:
+      - finpro-network
+
+networks:
+  finpro-network:
+    external: true
