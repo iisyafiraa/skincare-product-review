@@ -81,7 +81,16 @@ This project builds an automated data pipeline to scrape, process, and analyze s
 ## Dashboard & Reporting
 The dashboard is built using **Metabase** and includes several charts to analyze skincare product reviews:
 
+- **Filtering Options:**
+  - **Platform:** E-commerce, supermarket, event, website.
+  - **Skin Type:** Dry, normal, oily, combination.
+  - **Skin Tone:** Dark, light, medium.
+  - **Undertone:** Cool, warm, neutral.
+  - **Date Filter:** Select time range for analysis.
 - **Overall Performance:** Total products, total categories, and total reviews.
+
+![Overall Performance](image/overall-performance.jpeg)
+
 - **Review Breakdown:**
   - Review per **undertone** (cool, warm, neutral).
   - Review per **skin tone** (dark, light, medium).
@@ -89,15 +98,14 @@ The dashboard is built using **Metabase** and includes several charts to analyze
   - Review per **usage period**.
   - Review by **rating**.
   - Review per **reviewer age**.
+
+![Review Breakdown](image/review-breakdown.jpeg)
+
 - **Top Products Analysis:**
   - **Top products by rating per category**.
   - **The cheapest high-rated (rating > 4.5) product per category**.
-- **Filtering Options:**
-  - **Platform:** E-commerce, supermarket, event, website.
-  - **Skin Type:** Dry, normal, oily, combination.
-  - **Skin Tone:** Dark, light, medium.
-  - **Undertone:** Cool, warm, neutral.
-  - **Date Filter:** Select time range for analysis.
+
+![Top Product Analysis](image/top-product-analysis.jpeg)
 
 ## Technologies Used
 - **Selenium** – Web scraping
